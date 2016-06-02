@@ -121,7 +121,7 @@ int main(void)
 			break;
 		case 3:
 			valor_periodo=valor_periodo-10;
-			if(valor_periodo=50)
+			if(valor_periodo<50)
 				valor_periodo=50;
 			DriverPeriodoInterrupcion(valor_periodo);
 			break;
