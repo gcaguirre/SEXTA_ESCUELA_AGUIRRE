@@ -67,7 +67,7 @@
 #elif (mk60fx512vlq15 == CPU)
 #else
 #endif
-#include "interrupcion.h"
+#include "puerto_serie.h"
 
 
 
@@ -82,25 +82,6 @@
 
 
 /*==================[macros and definitions]=================================*/
-#define RGB_ROJO_PAQUETE 2
-#define RGB_VERDE_PAQUETE 2
-#define RGB_AZUL_PAQUETE 2
-#define PURO_ROJO_PAQUETE 2
-#define PURO_VERDE_PAQUETE 2
-#define PURO_AMARILLO_PAQUETE 2
-
-
-#define GPIO5 5
-#define GPIO0 0
-#define GPIO1 1
-
-#define GPIO5_0 0
-#define GPIO5_1 1
-#define GPIO5_2 2
-#define GPIO0_14 14
-#define GPIO1_11 11
-#define GPIO1_12 12
-
 /*==================[internal data declaration]==============================*/
 
 /*==================[internal functions declaration]=========================*/
@@ -111,24 +92,30 @@
 
 /*==================[internal functions definition]==========================*/
 // Inicializa interrupcion
-void DriverInicializaInterrupcion(void)
+void DriverInicializaUART(void)
 {
+	Chip_UART_Init(LPC_USART2);
+	Chip_UART_SetBaud(LPC_USART2,115200);
+	Chip_UART_SetupFIFOS(LPC_USART2, UART_FCR_FIFO_EN|UART_FCR_TRG_LEV0);
+	Chip_UART_TXEnable(LPC_USART2);
+	Chip_SCU_PinMux(7,1,MD_PDN,FUNC6);
+	Chip_SCU_PinMux(7,2,MD_PLN|MD_EZI|MD_ZI,FUNC6);
 
 
-	Chip_RIT_Init(LPC_RITIMER);
-	Chip_RIT_SetTimerInterval(LPC_RITIMER, 100);
-	NVIC_EnableIRQ(RITIMER_IRQn);
+
+
 }
 
-void DriverLimpiaInt(void)
-{
-	Chip_RIT_ClearInt(LPC_RITIMER);
+uint8_t DriverLeeTeclado(void){
+	return Chip_UART_ReadByte((LPC_USART_T *)LPC_USART2);
 }
-// Cambia periodo de la interrupcion
-void DriverPeriodoInterrupcion(uint32_t periodo)
-{
 
-	Chip_RIT_SetTimerInterval(LPC_RITIMER, periodo);
+int DriverEstadoTeclado(void){
+	return Chip_UART_ReadLineStatus((LPC_USART_T *)LPC_USART2) & UART_LSR_THRE;
+}
+
+void DriverEnviaByte(char caracter){
+	Chip_UART_SendByte((LPC_USART_T *)LPC_USART2, caracter);
 }
 
 /*==================[external functions definition]==========================*/

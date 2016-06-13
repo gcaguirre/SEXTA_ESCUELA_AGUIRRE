@@ -67,8 +67,7 @@
 #elif (mk60fx512vlq15 == CPU)
 #else
 #endif
-#include "interrupcion.h"
-
+#include "dac.h"
 
 
 
@@ -82,25 +81,6 @@
 
 
 /*==================[macros and definitions]=================================*/
-#define RGB_ROJO_PAQUETE 2
-#define RGB_VERDE_PAQUETE 2
-#define RGB_AZUL_PAQUETE 2
-#define PURO_ROJO_PAQUETE 2
-#define PURO_VERDE_PAQUETE 2
-#define PURO_AMARILLO_PAQUETE 2
-
-
-#define GPIO5 5
-#define GPIO0 0
-#define GPIO1 1
-
-#define GPIO5_0 0
-#define GPIO5_1 1
-#define GPIO5_2 2
-#define GPIO0_14 14
-#define GPIO1_11 11
-#define GPIO1_12 12
-
 /*==================[internal data declaration]==============================*/
 
 /*==================[internal functions declaration]=========================*/
@@ -110,26 +90,29 @@
 /*==================[external data definition]===============================*/
 
 /*==================[internal functions definition]==========================*/
-// Inicializa interrupcion
-void DriverInicializaInterrupcion(void)
+
+void DriverConfiguraDac(void)
 {
-
-
-	Chip_RIT_Init(LPC_RITIMER);
-	Chip_RIT_SetTimerInterval(LPC_RITIMER, 100);
-	NVIC_EnableIRQ(RITIMER_IRQn);
+	Chip_SCU_DAC_Analog_Config();
 }
-
-void DriverLimpiaInt(void)
+// Inicializa el DAC
+void DriverInicializaDac(void)
 {
-	Chip_RIT_ClearInt(LPC_RITIMER);
-}
-// Cambia periodo de la interrupcion
-void DriverPeriodoInterrupcion(uint32_t periodo)
-{
+	Chip_SCU_DAC_Analog_Config();
+	Chip_DAC_Init(LPC_DAC);
+	Chip_DAC_ConfigDAConverterControl(LPC_DAC, DAC_DMA_ENA);
+} // end DriverInicializaDac(void)
 
-	Chip_RIT_SetTimerInterval(LPC_RITIMER, periodo);
-}
+void DriverControlaDac(void)
+{
+	Chip_DAC_ConfigDAConverterControl(LPC_DAC, DAC_DMA_ENA);
+} // end DriverControlaDac()
+
+void DriverActualizaDac(uint32_t p_dac_value)
+{
+//	Chip_DAC_UpdateValue(LPC_DAC_T *pDAC, uint32_t p_dac_value);
+	Chip_DAC_UpdateValue(LPC_DAC, p_dac_value);
+} // end DriverActualizaDac(p_dac_value)
 
 /*==================[external functions definition]==========================*/
 /** \brief Main function

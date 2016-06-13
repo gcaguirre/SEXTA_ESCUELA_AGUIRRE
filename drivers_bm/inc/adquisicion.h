@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef INT_H
-#define INT_H
+#ifndef ADQ_H
+#define ADQ_H
 /** \brief Bare Metal example header file
  **
  ** This is a mini example of the CIAA Firmware
@@ -61,6 +61,7 @@
 /*==================[inclusions]=============================================*/
 #include "stdint.h"
 #include "chip.h"
+//#include “dac_18xx_43xx.h”
 /*==================[macros]=================================================*/
 #define lpc4337            1
 #define mk60fx512vlq15     2
@@ -69,11 +70,13 @@
 
 /*==================[external data declaration]==============================*/
 
-
 /*==================[external functions declaration]=========================*/
-void DriverInicializaInterrupcion(void);
-void DriverPeriodoInterrupcion(uint32_t per);
-void DriverLimpiaInt(void);
+void DriverConfiguraDac(void); //indicarle que vamos a utilizar el conversor DA
+
+//funciones de LPOpen para el manejo del conversor DA
+void DriverInicializaDac(void);
+void DriverControlaDac(void);
+void DriverActualizaDac(uint32_t p_dac_value);
 
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */

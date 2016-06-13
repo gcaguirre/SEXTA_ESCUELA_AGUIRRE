@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef INT_H
-#define INT_H
+#ifndef DPS_H
+#define DPS_H
 /** \brief Bare Metal example header file
  **
  ** This is a mini example of the CIAA Firmware
@@ -61,6 +61,7 @@
 /*==================[inclusions]=============================================*/
 #include "stdint.h"
 #include "chip.h"
+//#include “dac_18xx_43xx.h”
 /*==================[macros]=================================================*/
 #define lpc4337            1
 #define mk60fx512vlq15     2
@@ -69,11 +70,13 @@
 
 /*==================[external data declaration]==============================*/
 
-
 /*==================[external functions declaration]=========================*/
-void DriverInicializaInterrupcion(void);
-void DriverPeriodoInterrupcion(uint32_t per);
-void DriverLimpiaInt(void);
+
+//funciones de LPOpen para el manejo de la salida serial
+void DriverInicializaUART(void);
+uint8_t DriverLeeTeclado(void);
+int DriverEstadoTeclado(void);
+void DriverEnviaByte(char caracter);
 
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */

@@ -1,4 +1,4 @@
-/* Copyright 2016, XXXXXXXXXX
+/* Copyright 2016, XXXXXXXXX  
  * All rights reserved.
  *
  * This file is part of CIAA Firmware.
@@ -31,19 +31,18 @@
  *
  */
 
-#ifndef INT_H
-#define INT_H
-/** \brief Bare Metal example header file
+/** \brief Blinking Bare Metal driver led
  **
- ** This is a mini example of the CIAA Firmware
+ **
  **
  **/
 
 /** \addtogroup CIAA_Firmware CIAA Firmware
  ** @{ */
+
 /** \addtogroup Examples CIAA Firmware Examples
  ** @{ */
-/** \addtogroup Baremetal Bare Metal example header file
+/** \addtogroup Baremetal Bare Metal LED Driver
  ** @{ */
 
 /*
@@ -59,25 +58,54 @@
  */
 
 /*==================[inclusions]=============================================*/
-#include "stdint.h"
+
+#ifndef CPU
+#error CPU shall be defined
+#endif
+#if (lpc4337 == CPU)
 #include "chip.h"
-/*==================[macros]=================================================*/
-#define lpc4337            1
-#define mk60fx512vlq15     2
+#elif (mk60fx512vlq15 == CPU)
+#else
+#endif
+#include "dac.h"
 
-/*==================[typedef]================================================*/
+/*==================[macros and definitions]=================================*/
 
-/*==================[external data declaration]==============================*/
+/*==================[internal data declaration]==============================*/
+
+/*==================[internal functions declaration]=========================*/
+
+/*==================[internal data definition]===============================*/
+
+/*==================[external data definition]===============================*/
 
 
-/*==================[external functions declaration]=========================*/
-void DriverInicializaInterrupcion(void);
-void DriverPeriodoInterrupcion(uint32_t per);
-void DriverLimpiaInt(void);
+/*==================[internal functions definition]==========================*/
+
+/*==================[external functions definition]==========================*/
+/** \brief Main function
+ *
+ * This is the main entry point of the software.
+ *
+ * \returns 0
+ *
+ * \remarks This function never returns. Return value is only to avoid compiler
+ *          warnings or errors.
+ */
+void IniciaDAC ()
+{
+	Chip_SCU_DAC_Analog_Config();
+	Chip_DAC_Init (LPC_DAC);
+	Chip_DAC_ConfigDAConverterControl(LPC_DAC,DAC_DMA_ENA);
+
+}
+void EscribeDAC (uint32_t dac)
+{
+	Chip_DAC_UpdateValue(LPC_DAC, dac);
+}
 
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
 /*==================[end of file]============================================*/
-#endif /* #ifndef MI_NUEVO_PROYECTO_H */
 

@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef INT_H
-#define INT_H
+#ifndef DAC_H
+#define DAC_H
 /** \brief Bare Metal example header file
  **
  ** This is a mini example of the CIAA Firmware
@@ -60,20 +60,25 @@
 
 /*==================[inclusions]=============================================*/
 #include "stdint.h"
-#include "chip.h"
+
 /*==================[macros]=================================================*/
 #define lpc4337            1
 #define mk60fx512vlq15     2
+//#define LED_R 0
+//#define LED_G 1
+//#define LED_B 2
+//#define YELLOW 14
+//#define ROJO 11
+//#define GREEN 12
 
 /*==================[typedef]================================================*/
 
 /*==================[external data declaration]==============================*/
+void IniciaDAC (void);
+void EscribeDAC (uint32_t);
 
 
 /*==================[external functions declaration]=========================*/
-void DriverInicializaInterrupcion(void);
-void DriverPeriodoInterrupcion(uint32_t per);
-void DriverLimpiaInt(void);
 
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */

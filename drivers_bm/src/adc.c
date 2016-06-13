@@ -1,4 +1,4 @@
-/* Copyright 2016, XXXXXXXXXX
+/* Copyright 2016, XXXXXXXXX  
  * All rights reserved.
  *
  * This file is part of CIAA Firmware.
@@ -31,19 +31,18 @@
  *
  */
 
-#ifndef INT_H
-#define INT_H
-/** \brief Bare Metal example header file
+/** \brief Blinking Bare Metal driver led
  **
- ** This is a mini example of the CIAA Firmware
+ **
  **
  **/
 
 /** \addtogroup CIAA_Firmware CIAA Firmware
  ** @{ */
+
 /** \addtogroup Examples CIAA Firmware Examples
  ** @{ */
-/** \addtogroup Baremetal Bare Metal example header file
+/** \addtogroup Baremetal Bare Metal LED Driver
  ** @{ */
 
 /*
@@ -59,25 +58,60 @@
  */
 
 /*==================[inclusions]=============================================*/
-#include "stdint.h"
+
+#ifndef CPU
+#error CPU shall be defined
+#endif
+#if (lpc4337 == CPU)
 #include "chip.h"
-/*==================[macros]=================================================*/
-#define lpc4337            1
-#define mk60fx512vlq15     2
+#elif (mk60fx512vlq15 == CPU)
+#else
+#endif
+#include "dac.h"
 
-/*==================[typedef]================================================*/
+/*==================[macros and definitions]=================================*/
+#define ADC_ID 0
+/*==================[internal data declaration]==============================*/
 
-/*==================[external data declaration]==============================*/
+/*==================[internal functions declaration]=========================*/
+
+/*==================[internal data definition]===============================*/
+
+/*==================[external data definition]===============================*/
 
 
-/*==================[external functions declaration]=========================*/
-void DriverInicializaInterrupcion(void);
-void DriverPeriodoInterrupcion(uint32_t per);
-void DriverLimpiaInt(void);
+/*==================[internal functions definition]==========================*/
+
+/*==================[external functions definition]==========================*/
+/** \brief Main function
+ *
+ * This is the main entry point of the software.
+ *
+ * \returns 0
+ *
+ * \remarks This function never returns. Return value is only to avoid compiler
+ *          warnings or errors.
+ */
+void IniciaADC ()
+{
+	ADC_CLOCK_SETUP_T ADCsetup;
+	Chip_SCU_ADC_Channel_Config(ADC_ID, ADC_CH1);
+	Chip_ADC_Init(LPC_ADC0,&ADCsetup );
+	Chip_ADC_EnableChannel(LPC_ADC0, ADC_CH1,ENABLE);
+
+
+}
+uint16_t LeeADC (void)
+{
+	uint16_t adc;
+	Chip_ADC_SetStartMode(LPC_ADC0, ADC_START_NOW, ADC_TRIGGERMODE_RISING);
+	while (Chip_ADC_ReadStatus(LPC_ADC0, ADC_CH1,ADC_DR_DONE_STAT)!= SET);
+	Chip_ADC_ReadValue(LPC_ADC0, ADC_CH1, &adc);
+	return adc;
+}
 
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
 /** @} doxygen end group definition */
 /*==================[end of file]============================================*/
-#endif /* #ifndef MI_NUEVO_PROYECTO_H */
 
