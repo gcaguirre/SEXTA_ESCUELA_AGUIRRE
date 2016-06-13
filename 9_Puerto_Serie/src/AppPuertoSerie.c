@@ -58,7 +58,8 @@
  */
 
 /*==================[inclusions]=============================================*/
-//#include "string.h"
+#include "string.h"
+//#include "stdlib.h"
 #include "AppPuertoSerie.h"       /* <= own header */
 #include "led.h"
 #include "interrupcion.h"
@@ -97,11 +98,16 @@ int main(void)
 {
    /* perform the needed initialization here */
       uint64_t j;
-	  uint8_t size = 28;
+	  uint8_t size = 15;
 	  uint8_t i = 0;
+	  uint16_t contador=0;
 //	  uint8_t data = 0;
 	  uint8_t tecla=0;
-	  char message[] = "Follow the white rabbit...\n\r";
+	  char message[]="-------------\n\r";
+	  char frase[]="Follow the wh\n\r";
+	  char cartel[]="Contador:";
+	  char numero[]=".............";
+//	  CopiaCadena(message,frase);
 
 
 	DriverInicializaLed();
@@ -115,19 +121,41 @@ int main(void)
 		tecla=DriverLeeTeclado();
 		switch(tecla)
 		{
+		case '1':
+			strcpy(cartel,"Contador:");
+			strcpy(numero,"");
+			itoa(contador,numero);
+			strcat(cartel,numero);
+			strcat(cartel,"\n\r");
+			strcpy(message,cartel);
+			i=0;
+			ApagaLeds();
+			DriverEnciendeLed(AZUL);
+			nro_led=AZUL;
+			break;
+		case '4': //incrementa contador
+			contador ++;
+			break;
+		case '5': //decrementa contador
+			contador --;
+			break;
 		case 'r': // se precionó la tecla r
+			strcpy(message,"Rojo\n\r");
+//			CopiaCadena(message,frase);
 			i=0;
 			ApagaLeds();
 			DriverEnciendeLed(PURO_ROJO);
 			nro_led=PURO_ROJO;
 			break;
 		case 'v': // se precionó la tecla v
+			strcpy(message,"Verde\n\r");
 			i=0;
 			ApagaLeds();
 			DriverEnciendeLed(PURO_VERDE);
 			nro_led=PURO_VERDE;
 			break;
 		case 'a': // se precionó la tecla a
+			strcpy(message,"Amarillo\n\r");
 			i=0;
 			ApagaLeds();
 			DriverEnciendeLed(PURO_AMARILLO);
@@ -146,7 +174,7 @@ int main(void)
 */
 
 		//Envia el mensaje byte por byte
-		 while((DriverEstadoTeclado() != 0) && (i < size))
+		 while((DriverEstadoTeclado() != 0) && (message[i] != '\0'))
 	      {
 	         /* send first byte */
 			 DriverEnviaByte(message[i]);
@@ -160,6 +188,42 @@ int main(void)
 
 	}// end while(1)
 }
+char CopiaCadena(char destino[],char fuente[]){
+	int i=0;
+	while(fuente[i]){
+		destino[i]=fuente[i];
+		i++;
+	}
+	destino[i]='\0'; //copia el '\0'
+	return *destino;
+}//end CopiaCadena
+
+void itoa(int n, char s[]){
+	int i, sign;
+	if((sign=n)<0)
+		n=-n;
+	i=0;
+	do{
+		s[i++]=n%10+'0';
+	}while((n/=10)>0);
+	if(sign<0){
+		s[i++]='-';
+	}
+	s[i]='\0';
+	reverse(s);
+}
+
+void reverse(char s[]){
+	int i,j;
+	char c;
+
+	for(i=0,j=strlen(s)-1;i<j;i++,j--){
+		c=s[i];
+		s[i]=s[j];
+		s[j]=c;
+	}
+}
+
 void ApagaLeds(void)
 {
 	DriverApagaLed(0);

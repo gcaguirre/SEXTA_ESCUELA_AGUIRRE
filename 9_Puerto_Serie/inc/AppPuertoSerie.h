@@ -109,5 +109,8 @@ void RIT_IRQHandler(void);
 
 void ISR_RIT(void);
 void ApagaLeds(void);
+char CopiaCadena(char destino[],char fuente[]);
+void itoa(int n, char s[]);
+void reverse(char s[]);
 #endif /* #ifndef BAREMETAL_BLINKING_H */
 
